@@ -1,4 +1,4 @@
-from bottle import route, get, post, request, run
+from bottle import route, get, post, request, run, static_file, jinja2_template as template
 from pymongo import Connection
 import ConfigParser
 
@@ -21,7 +21,19 @@ db = connection[mongo_db]
 ### ROUTES ###
 @route('/')
 def index():
-	return 'Hikaruspace, under construction'
+	return template('views/index.tpl')
+
+@route('/images/<filename:re:.*\.png>')
+def serve_image(filename):
+	return static_file(filename, root='images', mimetype='image/png')
+
+@route('/styles/<filename:path>')
+def serve_styles(filename):
+	return static_file(filename, root='styles')
+
+@route('/js/<filename:path>')
+def serve_js(filename):
+	return static_file(filename, root='js')
 
 
 ### RUN THE SERVER ###
