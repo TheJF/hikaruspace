@@ -2,4 +2,4 @@ Hikaruspace: Front-end for H.I.K.A.R.U.
 =======================================
 v0.1
 
-This is a web front-end to interact with Project H.I.K.A.R.U. (**H**ackerspace **I**ntelligent networ**K**ed **A**rea-Aware **R**obot **U**nit)
+This is a web front-end to interact with Project H.I.K.A.R.U. (<b>H</b>ackerspace <b>I</b>ntelligent networ<b>K</b>ed <b>A</b>rea-Aware <b>R</b>obot <b>U</b>nit)
