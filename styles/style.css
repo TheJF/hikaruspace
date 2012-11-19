@@ -14,7 +14,7 @@ body {
 
 	padding-left: 20px;
 	width: 100%;
-	height: 110px;
+	height: 90px;
 
 	/* fallback */
 	background-color: #1d6607;
@@ -63,26 +63,34 @@ body {
 }
 
 .status_grey {
-	background-color: #2b2c2c;
+	background-color: #2b2c2c !important;
 }
 
 /* /STATUSES */
 
 #status {
+	position: relative;
+	top: 30px;
 	font-size: 65px;
 }
 
 #observing {
 	position: absolute;
 	right: 40px;
-	top: 42px;
+	top: 50px;
 
 	font-size: 23px;
 }
 
+#menu {
+	position: relative;
+	top: 60px;
+	padding-right: 40px;
+}
+
 /* CONTENT AREA */
 #content {
-
+	padding-top: 40px;
 }
 
 /* WIDGETS */
@@ -139,7 +147,7 @@ body {
 .widget-content {
 	display: block;
 	margin-left: -2px;
-	margin-top: 25px;
+	margin-top: 40px;
 	width: 100%;
 	text-align: center;
 	word-break: hyphenate;

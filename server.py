@@ -31,9 +31,9 @@ def serve_image(filename):
 def serve_styles(filename):
 	return static_file(filename, root='styles')
 
-@route('/js/<filename:path>')
-def serve_js(filename):
-	return static_file(filename, root='js')
+@route('/libs/<filename:path>')
+def serve_libs(filename):
+	return static_file(filename, root='libs')
 
 
 ### RUN THE SERVER ###
