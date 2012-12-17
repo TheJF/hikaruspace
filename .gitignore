@@ -3,3 +3,6 @@ server.cfg
 
 # Sublime Stuff
 *.sublime-*
+
+# Program Operation
+/data
