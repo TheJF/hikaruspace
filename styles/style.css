@@ -84,8 +84,9 @@ body {
 
 #menu {
 	position: relative;
-	top: 60px;
+	top: 100px;
 	padding-right: 40px;
+	float: right;
 }
 
 /* CONTENT AREA */

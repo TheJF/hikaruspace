@@ -4,12 +4,14 @@
 		<meta charset="utf-8" />
 		<title>Hikaruspace</title>
 		<link href="/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link type="text/css" href="styles/persona-buttons.css" rel="stylesheet" media="screen"/>
 		<link type="text/css" href="styles/style.css" rel="stylesheet" media="screen"/>
 		<!--[if IE]>
 			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
 		<script src="/libs/bootstrap/js/bootstrap.min.js"></script>
+		<script src="https://login.persona.org/include.js"></script>
 		<script src="/libs/hikaruspace.js" type="text/javascript"></script>
 	</head>
 	<body id="home">
@@ -17,9 +19,14 @@
 			<span id="status">Hikaruspace</span>
 			<span id="observing">Observing HubCityLabs Hackerspace</span>
 			<div id="menu">
-				<ul class="nav nav-pills">
-	              <li><a href="#login" data-toggle="modal">Login</a></li>
-	            </ul>
+				<span id="account_logged">
+					<span id="logged_out" style="visibility: hidden;">
+            			<a href="#" id="signin" class="persona-button green"><span>Sign in with your E-mail</span></a>
+            		</span>
+            		<span id="logged_in" style="visibility: hidden;">
+            			Logged in. <a href="#" id="signout">Log out</a>
+            		</span>
+            	</span>
 			</div>
 		</div>
 		<div id="content">
