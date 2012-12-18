@@ -83,10 +83,23 @@ def login():
         abort(500)
 
 
-@bottle.route('/auth/logout')
+@bottle.post('/auth/logout')
 def logout():
     session = bottle.request.environ.get('beaker.session')
     session.delete()
+
+
+@bottle.route('/test')
+def test():
+    session = bottle.request.environ.get('beaker.session')
+    log_state = 'email' in session
+
+    if log_state == False:
+        return 'Not logged in'
+    elif log_state == True:
+        return 'Logged in as ' + session['email']
+
+    return log_state
 
 ### RUN THE SERVER ###
 bottle.run(app=app, host=host, port=port, debug=True)

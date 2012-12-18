@@ -47,12 +47,13 @@ $(document).ready(function() {
 			});
 		},
 		onlogout: function() {
-			$('#logged_out').css('display', '');
-			$('#logged_in').css('display', 'none');
 			$.ajax({
 				type: 'POST',
 				url: '/auth/logout',
-				success: function(res, status, xhr) { window.location.reload(); },
+				success: function(res, status, xhr) {
+							$('#logged_out').css('display', '');
+							$('#logged_in').css('display', 'none');
+						},
 				error: function(xhr, status, err) { console.log("Logout failure: " + err); }
 			});
 		}
