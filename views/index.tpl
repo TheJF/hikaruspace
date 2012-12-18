@@ -20,10 +20,10 @@
 			<span id="observing">Observing HubCityLabs Hackerspace</span>
 			<div id="menu">
 				<span id="account_logged">
-					<span id="logged_out" style="visibility: hidden;">
+					<span id="logged_out" style="display: none;">
             			<a href="#" id="signin" class="persona-button green"><span>Sign in with your E-mail</span></a>
             		</span>
-            		<span id="logged_in" style="visibility: hidden;">
+            		<span id="logged_in" style="display: none;">
             			Logged in. <a href="#" id="signout">Log out</a>
             		</span>
             	</span>

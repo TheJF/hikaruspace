@@ -40,15 +40,15 @@ $(document).ready(function() {
 					console.log('Logged in!');
 					console.log(res);
 					console.log(status);
-					$('#logged_out').css('visibility', 'hidden');
-					$('#logged_in').css('visibility', 'visible');
+					$('#logged_out').css('display', 'none');
+					$('#logged_in').css('display', '');
 				},
 				error: function(xhr, status, err) { console.log("Login failure: " + err); }
 			});
 		},
 		onlogout: function() {
-			$('#logged_out').css('visibility', 'visible');
-			$('#logged_in').css('visibility', 'hidden');
+			$('#logged_out').css('display', '');
+			$('#logged_in').css('display', 'none');
 			$.ajax({
 				type: 'POST',
 				url: '/auth/logout',
