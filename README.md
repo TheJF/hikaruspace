@@ -7,7 +7,6 @@ This is a web front-end to interact with Project H.I.K.A.R.U. (<b>H</b>ackerspac
 Dependencies
 ============
 - bottle
-- gevent
-- greenlet
-- gevent-websocket
+- beaker
 - requests
+- pymongo
