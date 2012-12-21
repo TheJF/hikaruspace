@@ -1,5 +1,5 @@
 import bottle
-from bottle import request, static_file, abort, jinja2_template as template
+from bottle import request, static_file, abort, response, jinja2_template as template
 from pymongo import Connection
 from beaker.middleware import SessionMiddleware
 import requests
@@ -28,14 +28,19 @@ session_opts = {
 app = SessionMiddleware(bottle.app(), session_opts)
 
 # connect to Mongo
-connection = Connection(mongo_host, mongo_port)
-db = connection[mongo_db]
-
+try:
+    connection = Connection(mongo_host, mongo_port)
+    db = connection[mongo_db]
+except:
+    print 'Mongo connection failure! Could not connect. Is Mongo running?'
+    exit(0)
 
 ### ROUTES ###
+
+
 @bottle.route('/')
 def index():
-    return template('views/index.tpl')
+    return template('views/index.tpl', login_bar=get_login_bar())
 
 
 @bottle.route('/images/<filename:re:.*\.png>')
@@ -51,6 +56,13 @@ def serve_styles(filename):
 @bottle.route('/libs/<filename:path>')
 def serve_libs(filename):
     return static_file(filename, root='libs')
+
+
+# Scripts are JavaScript that are run through the templating engine, allowing for integration of values and such
+@bottle.route('/scripts/<filename:path>')
+def scripts(filename):
+    response.content_type = 'text/javascript, charset=utf8'
+    return template('scripts/' + filename, login_name=get_login_name())
 
 
 @bottle.post('/auth/login')
@@ -76,7 +88,7 @@ def login():
             # Log the user in by setting a secure session cookie
             session['email'] = verification_data['email']
             session.save()
-
+            print resp.content
             return resp.content
 
         # Oops, something failed. Abort.
@@ -89,17 +101,29 @@ def logout():
     session.delete()
 
 
-@bottle.route('/test')
-def test():
+### HELPER FUNCTIONS ###
+
+def is_logged_in():
     session = bottle.request.environ.get('beaker.session')
-    log_state = 'email' in session
+    logged_in = 'email' in session
+    return logged_in
 
-    if log_state == False:
-        return 'Not logged in'
-    elif log_state == True:
-        return 'Logged in as ' + session['email']
 
-    return log_state
+def get_login_name():
+    session = bottle.request.environ.get('beaker.session')
+    if is_logged_in():
+        return session['email']
+    else:
+        return 'undefined'
+
+
+def get_login_bar():
+    if is_logged_in():
+        login_bar = '<span id="logged_in">Logged in as ' + get_login_name() + '. <a href="#" id="signout">Log out</a></span>'
+    else:
+        login_bar = '<span id="logged_out"><a href="#" id="signin" class="persona-button green"><span>Sign in with your E-mail</span></a></span>'
+
+    return login_bar
 
 ### RUN THE SERVER ###
 bottle.run(app=app, host=host, port=port, debug=True)

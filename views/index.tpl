@@ -13,6 +13,7 @@
 		<script src="/libs/bootstrap/js/bootstrap.min.js"></script>
 		<script src="https://login.persona.org/include.js"></script>
 		<script src="/libs/hikaruspace.js" type="text/javascript"></script>
+		<script src="/scripts/persona.js" type="text/javascript"></script>
 	</head>
 	<body id="home">
 		<div id="header">
@@ -20,12 +21,7 @@
 			<span id="observing">Observing HubCityLabs Hackerspace</span>
 			<div id="menu">
 				<span id="account_logged">
-					<span id="logged_out" style="display: none;">
-            			<a href="#" id="signin" class="persona-button green"><span>Sign in with your E-mail</span></a>
-            		</span>
-            		<span id="logged_in" style="display: none;">
-            			Logged in. <a href="#" id="signout">Log out</a>
-            		</span>
+					{{ login_bar }}
             	</span>
 			</div>
 		</div>
