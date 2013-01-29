@@ -14,9 +14,13 @@ config.read("server.cfg")
 # set configs
 host = config.get('Server', 'host')
 port = config.getint('Server', 'port')
+
 mongo_host = config.get('Mongo', 'host')
 mongo_port = config.getint('Mongo', 'port')
 mongo_db = config.get('Mongo', 'database')
+
+echo_host = config.get('Hikaru-Echo', 'host')
+echo_port = config.get('Hikaru-Echo', 'port')
 
 # set session options
 session_opts = {
@@ -65,6 +69,27 @@ def scripts(filename):
     return template('scripts/' + filename, login_name=get_login_name())
 
 
+# Receive an NFC UID and return if this card ID has access
+@bottle.get('/module/gatekeeper')
+@bottle.post('/module/gatekeeper')
+def gatekeeper():
+    test = request.forms.get('test')
+    speech = speak(test)
+    # Check if it's a valid gatekeeper request
+    # Then verify if it's coming from a verified IP address and device
+    # Validate the card UID against the access privilege list
+    # If all is good, grant access
+    # If not, deny access
+    return speech
+
+
+@bottle.route('/debug/gatekeeper')
+def debug_gatekeeper():
+    json_to_post = {'test': 'Okay, this seems to work.'}
+    r = requests.post('http://' + host + ':' + str(port) + '/module/gatekeeper', data=json_to_post)
+    return r.text
+
+
 @bottle.post('/auth/login')
 def login():
     # Check if the request has an assertion
@@ -88,7 +113,6 @@ def login():
             # Log the user in by setting a secure session cookie
             session['email'] = verification_data['email']
             session.save()
-            print resp.content
             return resp.content
 
         # Oops, something failed. Abort.
@@ -125,5 +149,12 @@ def get_login_bar():
 
     return login_bar
 
+
+def speak(sentence):
+    """ Send a sentence to the speech server """
+    speech_url = 'http://' + echo_host + ':' + str(echo_port) + '/speak/' + sentence
+    requests.get(speech_url)
+    return speech_url
+
 ### RUN THE SERVER ###
-bottle.run(app=app, host=host, port=port, debug=True)
+bottle.run(server='paste', app=app, host=host, port=port)
