@@ -10,3 +10,4 @@ Dependencies
 - beaker
 - requests
 - pymongo
+- paste
