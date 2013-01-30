@@ -11,3 +11,4 @@ Dependencies
 - requests
 - pymongo
 - paste
+- jinja2
