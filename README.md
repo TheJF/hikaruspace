@@ -12,3 +12,8 @@ Dependencies
 - pymongo
 - paste
 - jinja2
+- bottle-tornado-websocket
+
+Installation
+============
+apt-get install libevent-dev
