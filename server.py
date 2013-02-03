@@ -1,5 +1,7 @@
 import bottle
 from bottle import request, static_file, abort, response, jinja2_template as template
+from bottle.ext.tornadosocket import TornadoWebSocketServer
+import tornado.websocket
 from pymongo import Connection
 from beaker.middleware import SessionMiddleware
 import requests
@@ -124,6 +126,49 @@ def logout():
     session = bottle.request.environ.get('beaker.session')
     session.delete()
 
+### WEBSOCKETRY ###
+
+class InterfaceDataHandler(tornado.websocket.WebSocketHandler):
+    connections = []
+
+    def open(self):
+        print 'Client connected'
+        # Add the connection to the list for global broadcasting purposes
+        self.connections.append(self)
+
+    def on_message(self, message):
+        # Update the interface
+        if message == "update":
+            self.write_message('test')
+
+    def on_close(self):
+        print 'Client connection closed'
+        # Clean up dead connections
+        self.connections.remove(self)
+
+    @classmethod
+    def broadcast(self, message):
+        print 'Broadcasting to all...'
+        print self.connections
+        for connection in self.connections:
+            connection.write_message(message)
+            print message
+
+tornado_handlers = [
+            (r"/interface_data", InterfaceDataHandler)
+        ]
+
+@bottle.get('/update_clients')
+def update_clients():
+    reader_id = request.query.get('reader_id')
+    card_uid = request.query.get('card_uid')
+    status = request.query.get('status')
+   
+    InterfaceDataHandler.broadcast(reader_id)
+    print "Reader ID: " + str(reader_id)
+    print "Card UID: " + str(card_uid) 
+    print "Status: " + str(status)
+    return "This quiet offends Slaanesh."
 
 ### HELPER FUNCTIONS ###
 
@@ -157,4 +202,4 @@ def speak(sentence):
     return speech_url
 
 ### RUN THE SERVER ###
-bottle.run(server='paste', app=app, host=host, port=port)
+bottle.run(server=TornadoWebSocketServer, handlers=tornado_handlers, reloader=True, app=app, host=host, port=port)

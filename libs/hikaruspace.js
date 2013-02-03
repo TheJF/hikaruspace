@@ -33,4 +33,18 @@ function trim11 (str) {
     }
     return str;
 }
+
+
+/**
+ * Web Socketry
+ */
+
+var ws = new WebSocket("ws://moncton.zombievolk.com:9999/interface_data");
+ws.onopen = function() {
+    ws.send("update");
+};
+ws.onmessage = function (evt) {
+  console.log(evt.data);  
+};
+
 });
