@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<title>Hikaruspace</title>
+		<title>{{ template_info['app_name'] }}</title>
 		<link href="/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 		<link type="text/css" href="styles/persona-buttons.css" rel="stylesheet" media="screen"/>
 		<link type="text/css" href="styles/style.css" rel="stylesheet" media="screen"/>
@@ -12,16 +12,16 @@
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
 		<script src="/libs/bootstrap/js/bootstrap.min.js"></script>
 		<script src="https://login.persona.org/include.js"></script>
-		<script src="/libs/hikaruspace.js" type="text/javascript"></script>
+		<script src="/scripts/hikaruspace.js" type="text/javascript"></script>
 		<script src="/scripts/persona.js" type="text/javascript"></script>
 	</head>
 	<body id="home">
 		<div id="header">
-			<span id="status">Hikaruspace</span>
-			<span id="observing">Observing HubCityLabs Hackerspace</span>
+			<span id="status">{{ template_info['app_name'] }}</span>
+			<span id="observing">Observing {{ template_info['observing'] }}</span>
 			<div id="menu">
 				<span id="account_logged">
-					{{ login_bar }}
+					{{ template_info['login_bar'] }}
             	</span>
 			</div>
 		</div>

@@ -24,6 +24,10 @@ mongo_db = config.get('Mongo', 'database')
 echo_host = config.get('Hikaru-Echo', 'host')
 echo_port = config.get('Hikaru-Echo', 'port')
 
+# get metas
+app_name = config.get('Meta', 'name')
+observing = config.get('Meta', 'observing')
+
 # set session options
 session_opts = {
     'session.type': 'file',
@@ -41,12 +45,12 @@ except:
     print 'Mongo connection failure! Could not connect. Is Mongo running?'
     exit(0)
 
-### ROUTES ###
 
+### ROUTES ###
 
 @bottle.route('/')
 def index():
-    return template('views/index.tpl', login_bar=get_login_bar())
+    return template('views/index.tpl', template_info=get_template_info())
 
 
 @bottle.route('/images/<filename:re:.*\.png>')
@@ -68,7 +72,7 @@ def serve_libs(filename):
 @bottle.route('/scripts/<filename:path>')
 def scripts(filename):
     response.content_type = 'text/javascript, charset=utf8'
-    return template('scripts/' + filename, login_name=get_login_name())
+    return template('scripts/' + filename, template_info=get_template_info())
 
 
 # Receive an NFC UID and return if this card ID has access
@@ -126,6 +130,21 @@ def logout():
     session = bottle.request.environ.get('beaker.session')
     session.delete()
 
+@bottle.get('/update_clients')
+def update_clients():
+    reader_id = request.query.get('reader_id')
+    card_uid = request.query.get('card_uid')
+    status = request.query.get('status')
+    timestamp = request.query.get('timestamp')
+
+    InterfaceDataHandler.broadcast(reader_id)
+    print "Reader ID: " + str(reader_id)
+    print "Card UID: " + str(card_uid) 
+    print "Status: " + str(status)
+    print "Timestamp: " + str(timestamp)
+    return "This quiet offends Slaanesh."
+
+
 ### WEBSOCKETRY ###
 
 class InterfaceDataHandler(tornado.websocket.WebSocketHandler):
@@ -158,17 +177,6 @@ tornado_handlers = [
             (r"/interface_data", InterfaceDataHandler)
         ]
 
-@bottle.get('/update_clients')
-def update_clients():
-    reader_id = request.query.get('reader_id')
-    card_uid = request.query.get('card_uid')
-    status = request.query.get('status')
-   
-    InterfaceDataHandler.broadcast(reader_id)
-    print "Reader ID: " + str(reader_id)
-    print "Card UID: " + str(card_uid) 
-    print "Status: " + str(status)
-    return "This quiet offends Slaanesh."
 
 ### HELPER FUNCTIONS ###
 
@@ -194,6 +202,14 @@ def get_login_bar():
 
     return login_bar
 
+def get_template_info():
+    template_info = {'login_name': get_login_name(), 
+                     'host': host, 
+                     'port': port,
+                     'login_bar': get_login_bar(),
+                     'app_name': app_name,
+                     'observing': observing}
+    return template_info
 
 def speak(sentence):
     """ Send a sentence to the speech server """

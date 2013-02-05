@@ -39,7 +39,7 @@ function trim11 (str) {
  * Web Socketry
  */
 
-var ws = new WebSocket("ws://moncton.zombievolk.com:9999/interface_data");
+var ws = new WebSocket("ws://{{ template_info['host'] }}:{{ template_info['port'] }}/interface_data");
 ws.onopen = function() {
     ws.send("update");
 };

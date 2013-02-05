@@ -10,7 +10,7 @@ $(document).ready(function() {
     });
 
     navigator.id.watch({
-        loggedInUser: '{{ login_name }}',
+        loggedInUser: '{{ template_info['login_name'] }}',
         onlogin: function(assertion) {
             $.ajax({
                 type: 'POST',
