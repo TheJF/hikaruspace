@@ -7,6 +7,7 @@ from beaker.middleware import SessionMiddleware
 import requests
 import json
 import ConfigParser
+import hashlib
 
 ### INITIALIZATION ###
 # load configs
@@ -20,6 +21,8 @@ port = config.getint('Server', 'port')
 mongo_host = config.get('Mongo', 'host')
 mongo_port = config.getint('Mongo', 'port')
 mongo_db = config.get('Mongo', 'database')
+mongo_username = config.get('Mongo', 'username')
+mongo_password = config.get('Mongo', 'password')
 
 echo_host = config.get('Hikaru-Echo', 'host')
 echo_port = config.get('Hikaru-Echo', 'port')
@@ -27,6 +30,9 @@ echo_port = config.get('Hikaru-Echo', 'port')
 # get metas
 app_name = config.get('Meta', 'name')
 observing = config.get('Meta', 'observing')
+
+# and the secret key
+secret_key = config.get('Crypto', 'secret_key')
 
 # set session options
 session_opts = {
@@ -41,6 +47,7 @@ app = SessionMiddleware(bottle.app(), session_opts)
 try:
     connection = Connection(mongo_host, mongo_port)
     db = connection[mongo_db]
+    db.authenticate(mongo_username, mongo_password)
 except:
     print 'Mongo connection failure! Could not connect. Is Mongo running?'
     exit(0)
@@ -130,8 +137,8 @@ def logout():
     session = bottle.request.environ.get('beaker.session')
     session.delete()
 
-@bottle.get('/update_clients')
-def update_clients():
+@bottle.get('/validate_card')
+def validate_card():
     reader_id = request.query.get('reader_id')
     card_uid = request.query.get('card_uid')
     status = request.query.get('status')
@@ -142,7 +149,19 @@ def update_clients():
     print "Card UID: " + str(card_uid) 
     print "Status: " + str(status)
     print "Timestamp: " + str(timestamp)
-    return "This quiet offends Slaanesh."
+    
+    member = db.members.find_one({"card_uid":card_uid})
+    if member:
+        hashed_time = hashlib.sha224()
+        hashed_time.update(str(secret_key) + str(timestamp))
+        validation_response = json.dumps({"access": "granted", 
+                               "hashed_time": hashed_time.hexdigest()})
+    else:
+        validation_response = json.dumps({"access": "denied"})
+    
+    print "Response: " + validation_response
+
+    return validation_response
 
 
 ### WEBSOCKETRY ###
