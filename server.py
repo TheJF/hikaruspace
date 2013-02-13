@@ -60,6 +60,10 @@ def index():
     return template('views/index.tpl', template_info=get_template_info())
 
 
+@bottle.get('/favicon.ico')
+def get_favicon():
+    return static_file('favicon.ico', root='')
+
 @bottle.route('/images/<filename:re:.*\.png>')
 def serve_image(filename):
     return static_file(filename, root='images', mimetype='image/png')
@@ -94,13 +98,6 @@ def gatekeeper():
     # If all is good, grant access
     # If not, deny access
     return speech
-
-
-@bottle.route('/debug/gatekeeper')
-def debug_gatekeeper():
-    json_to_post = {'test': 'Okay, this seems to work.'}
-    r = requests.post('http://' + host + ':' + str(port) + '/module/gatekeeper', data=json_to_post)
-    return r.text
 
 
 @bottle.post('/auth/login')
@@ -144,25 +141,43 @@ def validate_card():
     status = request.query.get('status')
     timestamp = request.query.get('timestamp')
 
-    InterfaceDataHandler.broadcast(reader_id)
     print "Reader ID: " + str(reader_id)
     print "Card UID: " + str(card_uid) 
     print "Status: " + str(status)
     print "Timestamp: " + str(timestamp)
     
-    member = db.members.find_one({"card_uid":card_uid})
+    member = find_member_by_card_uid(card_uid)
     if member:
         hashed_time = hashlib.sha224()
         hashed_time.update(str(secret_key) + str(timestamp))
         validation_response = json.dumps({"access": "granted", 
                                "hashed_time": hashed_time.hexdigest()})
+        # Update the dashboard with the relevant info
+        door_opened_time = timestamp
+        r = requests.get('http://'+host+':'+port+'/update_dashboard?widget=2&label=Door last opened&value='+door_opened_time+'&status=grey') 
     else:
         validation_response = json.dumps({"access": "denied"})
     
     print "Response: " + validation_response
+    
 
     return validation_response
 
+@bottle.get('/update_dashboard')
+def update_dashboard():
+    widget_num = request.query.get('widget')
+    label = request.query.get('label')
+    value = request.query.get('value')
+    status = request.query.get('status')
+
+    widget = {'command_type': 'dashboard_update', 'widget_num': widget_num, 'label': label, 'value': value, 'status': status}
+    dashboard = update_dashboard(widget)
+
+    # JSON string it up
+    widget = json.dumps(widget)
+    InterfaceDataHandler.broadcast(widget)
+
+    return widget
 
 ### WEBSOCKETRY ###
 
@@ -235,6 +250,16 @@ def speak(sentence):
     speech_url = 'http://' + echo_host + ':' + str(echo_port) + '/speak/' + sentence
     requests.get(speech_url)
     return speech_url
+
+### DATABASE FUNCTIONS ####
+
+# TODO: Abstract this into a library
+def find_member_by_card_uid(card_uid):
+    member = db.members.find_one({"card_uid":card_uid})
+    return member
+
+def update_dashboard(widget):
+    return 'Not yet done'
 
 ### RUN THE SERVER ###
 bottle.run(server=TornadoWebSocketServer, handlers=tornado_handlers, reloader=True, app=app, host=host, port=port)

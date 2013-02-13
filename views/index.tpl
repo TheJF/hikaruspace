@@ -26,7 +26,8 @@
 			</div>
 		</div>
 		<div id="content">
-			<span id="widget-1" class="widget">
+			<div id="widgetbox">
+            <span id="widget-1" class="widget">
 				<span id="widget-1-title" class="widget-title">
 					Door Status
 				</span>
@@ -80,7 +81,7 @@
 				</span>
 			</span>
 		</div>
-
+        </div>
 		<form name="loginForm" id="loginForm" class="form-horizontal">
 			<div id="login" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="loginLabel" aria-hidden="true">
 				<div class="modal-header">
