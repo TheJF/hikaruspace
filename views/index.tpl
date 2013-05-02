@@ -10,6 +10,7 @@
 			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
 		<script src="/libs/bootstrap/js/bootstrap.min.js"></script>
 		<script src="https://login.persona.org/include.js"></script>
 		<script src="/scripts/hikaruspace.js" type="text/javascript"></script>

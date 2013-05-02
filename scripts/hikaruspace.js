@@ -65,7 +65,6 @@ function dashboardUpdate(message) {
         if ( $(widget_id).length ) {
             console.log('Updating widget...');
             $(widget_id).replaceWith(widget);
-            $(widget_id).effect("highlight", {}, 3000);
 
         } else {
             console.log('Refreshing dashboard...');
