@@ -272,6 +272,7 @@ def generate_dashboard(widget):
 
 def get_dashboard():
     widgets = db.dashboard_widgets.find({"active": True})
+    widgets.sort("widget_num", 1)
     widgets = dumps(widgets)
     print widgets
     return widgets
