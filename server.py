@@ -8,6 +8,7 @@ import requests
 import json
 import ConfigParser
 import hashlib
+from datetime import datetime
 
 ### INITIALIZATION ###
 # load configs
@@ -79,7 +80,7 @@ def serve_libs(filename):
     return static_file(filename, root='libs')
 
 
-# Scripts are JavaScript that are run through the templating engine, allowing for integration of values and such
+# Scripts are JavaScript scripts that are run through the templating engine, allowing for integration of values and such
 @bottle.route('/scripts/<filename:path>')
 def scripts(filename):
     response.content_type = 'text/javascript, charset=utf8'
@@ -153,30 +154,32 @@ def validate_card():
         validation_response = json.dumps({"access": "granted", 
                                "hashed_time": hashed_time.hexdigest()})
         # Update the dashboard with the relevant info
-        door_opened_time = timestamp
-        r = requests.get('http://'+host+':'+port+'/update_dashboard?widget=2&label=Door last opened&value='+door_opened_time+'&status=grey') 
+        dt_timestamp = datetime.fromtimestamp(float(timestamp))
+        door_opened_time = dt_timestamp.strftime('%B %d, %Y, %H:%M:%S')
+        update_dashboard('2', 'Door last opened', door_opened_time, 'grey')
     else:
         validation_response = json.dumps({"access": "denied"})
     
     print "Response: " + validation_response
-    
 
     return validation_response
 
 @bottle.get('/update_dashboard')
-def update_dashboard():
-    widget_num = request.query.get('widget')
-    label = request.query.get('label')
+def update_dashboard_route():
+    widget_num = requests.query.get('widget')
+    label = requests.query.get('label')
     value = request.query.get('value')
     status = request.query.get('status')
 
+    return update_dashboard(widget_num, label, value, status)
+
+def update_dashboard( widget_num, label, value, status ):
     widget = {'command_type': 'dashboard_update', 'widget_num': widget_num, 'label': label, 'value': value, 'status': status}
-    dashboard = update_dashboard(widget)
 
     # JSON string it up
     widget = json.dumps(widget)
     InterfaceDataHandler.broadcast(widget)
-
+    print widget
     return widget
 
 ### WEBSOCKETRY ###
@@ -258,7 +261,7 @@ def find_member_by_card_uid(card_uid):
     member = db.members.find_one({"card_uid":card_uid})
     return member
 
-def update_dashboard(widget):
+def generate_dashboard(widget):
     return 'Not yet done'
 
 ### RUN THE SERVER ###
