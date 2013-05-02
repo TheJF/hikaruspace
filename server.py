@@ -6,6 +6,7 @@ from pymongo import Connection
 from beaker.middleware import SessionMiddleware
 import requests
 import json
+from bson.json_util import dumps
 import ConfigParser
 import hashlib
 from datetime import datetime
@@ -182,6 +183,11 @@ def update_dashboard( widget_num, label, value, status ):
     print widget
     return widget
 
+@bottle.get('/dashboard.json')
+def get_dashboard_json():
+    widget = get_dashboard()
+    return widget
+
 ### WEBSOCKETRY ###
 
 class InterfaceDataHandler(tornado.websocket.WebSocketHandler):
@@ -263,6 +269,12 @@ def find_member_by_card_uid(card_uid):
 
 def generate_dashboard(widget):
     return 'Not yet done'
+
+def get_dashboard():
+    widgets = db.dashboard_widgets.find({"active": True})
+    widgets = dumps(widgets)
+    print widgets
+    return widgets
 
 ### RUN THE SERVER ###
 bottle.run(server=TornadoWebSocketServer, handlers=tornado_handlers, reloader=True, app=app, host=host, port=port)

@@ -37,21 +37,56 @@ function trim11 (str) {
     return str;
 }
 
+function dashboardInit() {
+    console.log("Initializing dashboard...");
+    $.ajax({
+        url: "dashboard.json",
+    }).done(function( data ) {
+        widgets = JSON.parse(data);
+        console.log(widgets);
+
+        for (var i=0; i<widgets.length; i++) {
+            var widget = renderWidget(widgets[i]);
+            $('#widgetbox').append(widget);
+        }
+        fitText();
+
+    });
+}
+
 function dashboardUpdate(message) {
+    console.log("Updating dashboard...");
     // Double check it has the correct message
     if (message['command_type'] == 'dashboard_update') {
-        widget = ['<span id="widget-'+message['widget_num']+'" class="widget status_'+message['status']+'">',
-                  '    <span id="widget-'+message['widget_num']+'-title" class="widget-title">',
-                  '        '+message['label']+'',
+        var widget = renderWidget(message);
+
+        // If the widget exists, replace it. If not, refresh the whole dashboard.
+        var widget_id = '#widget-'+message['widget_num'];
+        if ( $(widget_id).length ) {
+            console.log('Updating widget...');
+            $(widget_id).replaceWith(widget);
+            $(widget_id).effect("highlight", {}, 3000);
+
+        } else {
+            console.log('Refreshing dashboard...');
+            dashboardInit();
+        }
+        //$('#widgetbox').html(widget);
+        fitText();
+    }
+}
+
+function renderWidget(widget) {
+    var widget = ['<span id="widget-'+widget['widget_num']+'" class="widget status_'+widget['status']+'">',
+                  '    <span id="widget-'+widget['widget_num']+'-title" class="widget-title">',
+                  '        '+widget['label']+'',
                   '    </span>',
-                  '    <span id="widget-'+message['value']+'-content" class="widget-content">',
-                  '        '+message["value"]+'',
+                  '    <span id="widget-'+widget['value']+'-content" class="widget-content">',
+                  '        '+widget["value"]+'',
                   '    </span>',
                   '</span>'
                  ].join('\n');
-        $('#widgetbox').html(widget);
-        fitText();
-    }
+    return widget;
 }
 
 /**
@@ -72,6 +107,7 @@ ws.onmessage = function (evt) {
 
 };
 
+dashboardInit();
 fitText();
 
 });

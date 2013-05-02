@@ -27,60 +27,8 @@
 		</div>
 		<div id="content">
 			<div id="widgetbox">
-            <span id="widget-1" class="widget">
-				<span id="widget-1-title" class="widget-title">
-					Door Status
-				</span>
-				<span id="widget-1-content" class="widget-content">
-					Locked
-				</span>
-			</span>
-
-			<span id="widget-2" class="widget">
-				<span id="widget-2-title" class="widget-title">
-					Door Last Opened
-				</span>
-				<span id="widget-3-content" class="widget-content">
-					9:25 PM, November 16, 2012.
-				</span>
-			</span>
-
-			<span id="widget-3" class="widget">
-				<span id="widget-3-title" class="widget-title">
-					Members currently at space
-				</span>
-				<span id="widget-3-content" class="widget-content">
-					2/12
-				</span>
-			</span>
-
-			<span id="widget-4" class="widget status_green">
-				<span id="widget-4-title" class="widget-title">
-					Reader # 1 Active?
-				</span>
-				<span id="widget-4-content" class="widget-content">
-					Yes
-				</span>
-			</span>
-
-			<span id="widget-5" class="widget status_red">
-				<span id="widget-5-title" class="widget-title">
-					Reader # 2 Active?
-				</span>
-				<span id="widget-5-content" class="widget-content">
-					No
-				</span>
-			</span>
-
-			<span id="widget-6" class="widget status_yellow">
-				<span id="widget-5-title" class="widget-title">
-					Nerf Turret Status
-				</span>
-				<span id="widget-6-content" class="widget-content">
-					Standby
-				</span>
-			</span>
-		</div>
+           
+			</div>
         </div>
 		<form name="loginForm" id="loginForm" class="form-horizontal">
 			<div id="login" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="loginLabel" aria-hidden="true">
